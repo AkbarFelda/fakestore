@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fake_store_api/Controller/Produk_Controller.dart';
 
-
 class WishlistPage extends StatelessWidget {
   final productController = Get.find<ProductController>();
   final wishlistController = Get.find<WishlistController>();
@@ -20,67 +19,68 @@ class WishlistPage extends StatelessWidget {
             ? Center(
                 child: Text("Wishlist is empty."),
               )
-            : ListView.builder(
-                itemCount: wishlistController.whislist.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final productId = wishlistController.whislist[index];
-                  final product = productController.productModels
-                      .firstWhere((p) => p.id == productId);
-                  return Card(
-                    margin: EdgeInsets.all(15),
-                    elevation: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        leading: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(product.image),
+            : FutureBuilder(
+                future: wishlistController.fetchFavorites(),
+                builder: (context, snapshot) => ListView.builder(
+                  itemCount: wishlistController.whislist.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final productId = wishlistController.whislist[index];
+                    return Card(
+                      margin: EdgeInsets.all(15),
+                      elevation: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          leading: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(productId.image),
+                              ),
+                            ),
+                          ),
+                          title: Text(
+                            productId.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Text(
+                            '${productId.category}  \$${productId.price.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontStyle: FontStyle.normal,
+                            ),
+                          ),
+                          trailing: GestureDetector(
+                            onTap: () {
+                              wishlistController.deleteWhislist(FavoriteModel(
+                                id: productId.id,
+                                title: productId.title,
+                                price: productId.price,
+                                description: productId.description,
+                                category: productId.category.toString(),
+                                image: productId.image,
+                              ));
+                              Get.snackbar(
+                                'Removed from Favorites',
+                                'Product ${productId.title} removed from favorites!',
+                                snackPosition: SnackPosition.TOP,
+                                duration: Duration(seconds: 2),
+                              );
+                            },
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.red,
                             ),
                           ),
                         ),
-                        title: Text(
-                          product.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Text(
-                          '${product.category}  \$${product.price.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontStyle: FontStyle.normal,
-                          ),
-                        ),
-                        trailing: GestureDetector(
-                          onTap: () {
-                            wishlistController.deleteWhislist(FavoriteModel(
-                              id: product.id,
-                              title: product.title,
-                              price: product.price,
-                              description: product.description,
-                              category: product.category.toString(),
-                              image: product.image,
-                            ));
-                            Get.snackbar(
-                              'Removed from Favorites',
-                              'Product ${product.title} removed from favorites!',
-                              snackPosition: SnackPosition.TOP,
-                              duration: Duration(seconds: 2),
-                            );
-                          },
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
       ),
     );

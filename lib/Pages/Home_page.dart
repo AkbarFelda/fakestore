@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
             icon: Icon(Icons.favorite),
             color: Colors.red,
             onPressed: () {
-              Get.to(WishlistPage());
+              Get.to(() => WishlistPage());
             },
           ),
         ],
@@ -33,8 +33,8 @@ class HomePage extends StatelessWidget {
             : GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 16.0,
-                  mainAxisSpacing: 16.0,
+                  crossAxisSpacing: 4.0,
+                  mainAxisSpacing: 4.0,
                 ),
                 itemCount: productController.productModels.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -98,7 +98,8 @@ class HomePage extends StatelessWidget {
                                             title: product.title,
                                             price: product.price,
                                             description: product.description,
-                                            category: product.category.toString(),
+                                            category:
+                                                product.category.toString(),
                                             image: product.image,
                                           ),
                                         );
@@ -112,9 +113,10 @@ class HomePage extends StatelessWidget {
                                       child: Obx(() {
                                         return Icon(
                                           Icons.favorite,
-                                          color: wishlistController
-                                                  .whislist
-                                                  .contains(product.id)
+                                          color: wishlistController.whislist
+                                                  .where((item) =>
+                                                      item.id == product.id)
+                                                  .isNotEmpty
                                               ? Colors.red
                                               : Colors.grey,
                                         );

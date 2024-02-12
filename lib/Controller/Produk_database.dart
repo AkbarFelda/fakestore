@@ -16,7 +16,7 @@ class DatabaseHelper {
   final String columnCategory = 'category';
   final String columnImage = 'image';
 
-  RxList<ProductModel> favoriteProduct = <ProductModel>[].obs;
+  RxList<FavoriteModel> favoriteProduct = <FavoriteModel>[].obs;
 
   Future<Database> initializeDatabase() async {
     String path = join(await getDatabasesPath(), databaseName);
@@ -63,7 +63,7 @@ class DatabaseHelper {
     final db = await initializeDatabase();
     int result = await db.delete(whislistTable,
         where: '$columnId = ?', whereArgs: [favoriteProduct.id]);
-    favoriteProduct.remove(favoriteProduct);
+    FavoriteModel.remove(favoriteProduct);
     return result;
   }
 }

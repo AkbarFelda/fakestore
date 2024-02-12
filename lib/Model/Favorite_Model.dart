@@ -6,6 +6,7 @@ class FavoriteModel {
     return wishlistController.whislist.contains(id);
   }
 
+   static List<FavoriteModel> favorites = [];
   final int id;
   final String title;
   final double price;
@@ -42,5 +43,23 @@ class FavoriteModel {
       category: map['category'],
       image: map['image'],
     );
+  }
+  
+  static void add(FavoriteModel favoriteProduct) {
+    if (!favorites.contains(favoriteProduct)) {
+      favorites.add(favoriteProduct);
+      print("Product added to favorites");
+    } else {
+      print("Product is already in favorites");
+    }
+  }
+
+  static void remove(FavoriteModel favoriteProduct) {
+    if (favorites.contains(favoriteProduct)) {
+      favorites.remove(favoriteProduct);
+      print("Product removed from favorites");
+    } else {
+      print("Product is not in favorites");
+    }
   }
 }
